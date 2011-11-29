@@ -1,4 +1,4 @@
-/* gcc $(pkg-config --cflags --libs sndfile) -lsnackstub2.2 -L/usr/lib/tcltk/snack2.2 -lsnack -I/usr/include/tcl8.4 -ltclstub -ltcl testsndfile.c */
+/* gcc $(pkg-config --cflags --libs sndfile) -lsnackstub2.2 -L/usr/lib/tcltk/snack2.2 -lsnack -I/usr/include/tcl8.4 -ltclstub -ltcl snack_sndfile_ext.c */
 
 #include <tcl.h>
 #include <snack.h>
@@ -89,6 +89,73 @@ static sf_count_t dummy_vio_tell (void *user_data)
 	return file->curpos;
 }
 
+
+static const char* ExtSndFile(const char* s)
+{
+	int l2 = strlen(s);
+
+        int k, count ;
+        SF_FORMAT_INFO format_info ;
+
+        sf_command (NULL, SFC_GET_FORMAT_MAJOR_COUNT, &count, sizeof (int));
+
+        for (k = 0 ; k < count ; k++)
+        {
+		format_info.format = k ;
+		sf_command (NULL, SFC_GET_FORMAT_MAJOR, &format_info, sizeof (SF_FORMAT_INFO));
+		fprintf (stderr, "%08x  %s %s\n", format_info.format, format_info.name, format_info.extension) ;
+
+		int l1 = strlen(format_info.extension);
+		if( l2 > l1 )
+		{
+			fprintf( stderr, "\"%s\" Vs \"%s\"\n", format_info.extension, &s[l2 - l1]);
+			if ( (s[l2 - l1 - 1] == '.') && (strncasecmp(format_info.extension, &s[l2 - l1], l1) == 0)) {
+				return format_info.name;
+			}
+		}
+	}
+        for (k = 0 ; k < count ; k++)
+        {
+		format_info.format = k ;
+		sf_command (NULL, SFC_GET_FORMAT_MAJOR, &format_info, sizeof (SF_FORMAT_INFO));
+		fprintf (stderr, "%08x  %s %s\n", format_info.format, format_info.name, format_info.extension) ;
+		char* tmp = strchr(format_info.name, ' ');
+		int l1;
+		if( tmp == NULL)
+		{
+			l1 = strlen(format_info.name);
+		}
+		else
+		{
+			l1 = ( tmp - format_info.name );
+		}
+		if( l2 > l1 )
+		{
+			fprintf( stderr, "\"%s\" Vs \"%s\"\n", format_info.name, &s[l2 - l1]);
+			if ( (s[l2 - l1 - 1] == '.') && (strncasecmp(format_info.name, &s[l2 - l1], l1) == 0)) {
+				return format_info.name;
+			}
+		}
+		tmp = strstr(format_info.name, "Sphere");
+		if( tmp == NULL)
+		{
+			tmp = strstr(format_info.name, "NIST");
+		}
+		if( tmp != NULL)
+		{
+			tmp = "sph";
+			l1 = 3;
+			if( l2 > l1 )
+			{
+				fprintf( stderr, "\"%s\" Vs \"%s\"\n", tmp, &s[l2 - l1]);
+				if ( (s[l2 - l1 - 1] == '.') && (strncasecmp(tmp, &s[l2 - l1], l1) == 0)) {
+					return format_info.name;
+				}
+			}
+		}
+	}
+	return NULL;
+}
 
 static const char *GuessSndFile (char *buf, int len)
 {
@@ -313,7 +380,7 @@ Snack_FileFormat SndFileFormat =
 	/* char* name; */ "SNDFILE_FORMAT",
 	/* guessFileTypeProc* guessProc; */ (guessFileTypeProc*) GuessSndFile,
 	/* getHeaderProc* getHeaderProc; */ GetSndHeader,
-	/* extensionFileTypeProc* extProc; */ NULL,
+	/* extensionFileTypeProc* extProc; */ (extensionFileTypeProc*) ExtSndFile,
 	/* putHeaderProc* putHeaderProc; */ NULL,
 	/* openProc* openProc; */ OpenSndFile,
 	/* closeProc* closeProc; */ CloseSndFile,
@@ -340,6 +407,16 @@ int main (int argc, char** args)
 	{
 		fprintf(stderr, "Recognition result: %s\n", format);
 	}
+	char* ret;
+	char* ext;
+	ext = ".sph";
+	fprintf(stderr, "Ext (%s) result: %s\n", ext, ( (( ret = ExtSndFile(ext)) == NULL) ? "none" : ret));
+	ext = ".ogg";
+	fprintf(stderr, "Ext (%s) result: %s\n", ext, ( (( ret = ExtSndFile(ext)) == NULL) ? "none" : ret));
+	ext = ".oga";
+	fprintf(stderr, "Ext (%s) result: %s\n", ext, ( (( ret = ExtSndFile(ext)) == NULL) ? "none" : ret));
+	ext = ".wav";
+	fprintf(stderr, "Ext (%s) result: %s\n", ext, ( (( ret = ExtSndFile(ext)) == NULL) ? "none" : ret));
 	return 0;
 }
 
