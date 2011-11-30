@@ -7,6 +7,10 @@
 #include <string.h>
 #include <stdlib.h>
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #if defined(__WIN32__)
 #  define WIN32_LEAN_AND_MEAN
 #  include <windows.h>
@@ -453,3 +457,7 @@ EXPORT(int, Snacksndfile_SafeInit)(Tcl_Interp *interp)
 {
 	return Snacksndfile_Init(interp);
 }
+
+#ifdef __cplusplus
+}
+#endif
