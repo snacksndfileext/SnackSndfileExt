@@ -1,0 +1,17 @@
+This is SnackSndfileExt extension for the snack2.2 framework. Its main
+purpose is to add reading capabilities for all the formats supported
+by libsndfile library to snack2.2 and programs based on it (e.g.:
+wavesurfer, transcriber, ...).
+
+This extension was entirily written during my spare time. I will not
+ask you for money, but to keep this code and its modifications free: I
+will evaluate to release this code under any license that will give to
+you and any other permission to freely distribute, modify and use this
+software for any purposes (e.g.: the code is currently released under
+any version of the LGPL of your choice). I will not evaluate any
+license that will allow you to distribute modified version of this
+code without giving to others the same permissions (e.g.: I will not
+evaluate BSD-like licenses).
+
+The extension is still young and probably plenty of BUGS. BUG reports,
+patches and suggestions are welcome.
