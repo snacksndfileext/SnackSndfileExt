@@ -204,7 +204,7 @@ static const char *GuessSndFile (char *buf, int len)
 		format_info.format = info.format;
 		int ret = sf_command (NULL /* sndfile */, SFC_GET_FORMAT_INFO, &format_info, sizeof(SF_FORMAT_INFO)) ;
 		fprintf(stderr, "%s [%s]\n", format_info.name, format_info.extension);
-		return format_info.name;
+		return "SNDFILE_FORMAT";//format_info.name;
 	}
 	
 	return NULL;
@@ -240,6 +240,7 @@ static int SndOpenModeFromString(char* mode)
 
 static int OpenSndFile(Sound *s, Tcl_Interp *interp, Tcl_Channel *ch, char *mode)
 {
+	fprintf(stderr, "OpenSndFile\n");
 	SF_INFO sfinfo;
 	*ch = (Tcl_Channel) sf_open ( Snack_GetSoundFilename(s), SndOpenModeFromString(mode), &sfinfo );
 	if (*ch == NULL)
@@ -253,11 +254,13 @@ static int OpenSndFile(Sound *s, Tcl_Interp *interp, Tcl_Channel *ch, char *mode
 
 static int SeekSndFile(Sound *s, Tcl_Interp *interp, Tcl_Channel ch, int pos)
 {
+	fprintf(stderr, "SeekSndFile\n");
 	return sf_seek ((SNDFILE*) ch, pos, SEEK_SET);
 }
 
 static int CloseSndFile(Sound *s, Tcl_Interp *interp, Tcl_Channel *ch)
 {
+	fprintf(stderr, "CloseSndFile\n");
 	int err = sf_close((SNDFILE*) *ch);
 	if (err != 0)
 	{
@@ -270,6 +273,7 @@ static int CloseSndFile(Sound *s, Tcl_Interp *interp, Tcl_Channel *ch)
 
 static int GetSndHeader(Sound *s, Tcl_Interp *interp, Tcl_Channel ch, Tcl_Obj *obj, char *buf)
 {
+	fprintf(stderr, "GetSndHeader\n");
 	if (obj != NULL)
 	{
 		Tcl_AppendResult(interp, "'data' subcommand forbidden for SNDFILE format", NULL);
@@ -369,6 +373,7 @@ static int GetSndHeader(Sound *s, Tcl_Interp *interp, Tcl_Channel ch, Tcl_Obj *o
 
 static int ReadSndSamples(Sound *s, Tcl_Interp *interp, Tcl_Channel ch, char *ibuf, float *obuf, int len)
 {
+	fprintf(stderr, "ReadSndSample(..., %d)\n", len);
 	if( ( ch == NULL ) || ( sf_error((SNDFILE*) ch) != 0 ) )
 	{
 		return -1;
@@ -426,7 +431,7 @@ int main (int argc, char** args)
 
 
 /* Called by "load libsnacksndfile" */
-EXPORT(int, Snacksndfile_Init) _ANSI_ARGS_((Tcl_Interp *interp))
+EXPORT(int, Snack_sndfile_ext_Init) _ANSI_ARGS_((Tcl_Interp *interp))
 {
 	int res;
   
@@ -442,6 +447,7 @@ EXPORT(int, Snacksndfile_Init) _ANSI_ARGS_((Tcl_Interp *interp))
 	}
 #endif
   
+  
 	res = Tcl_PkgProvide(interp, "snacksndfile", sf_version_string());
   
 	if (res != TCL_OK) return res;
@@ -455,7 +461,7 @@ EXPORT(int, Snacksndfile_Init) _ANSI_ARGS_((Tcl_Interp *interp))
 
 EXPORT(int, Snacksndfile_SafeInit)(Tcl_Interp *interp)
 {
-	return Snacksndfile_Init(interp);
+	return Snack_sndfile_ext_Init(interp);
 }
 
 #ifdef __cplusplus

@@ -37,6 +37,9 @@ SC_CONFIG_CFLAGS
 
 SC_ENABLE_SHARED
 
+SC_PATH_SNACKCONFIG
+SC_LOAD_SNACKCONFIG
+
 PKG_CHECK_MODULES(SNDFILE, [sndfile], have_sndfile=true, have_sndfile=false)
 AM_CONDITIONAL(SNDFILE, test x$have_sndfile = xtrue)
 AC_SUBST(SNDFILE_CFLAGS)
@@ -54,7 +57,8 @@ AC_ARG_ENABLE(stubs,[  --disable-stubs         disable stub support],,enableval2
 if test "$enableval2" = "no"; then
     AC_MSG_RESULT(will use stubs (normal))
     CFLAGS="$CFLAGS -DUSE_SNACK_STUBS -DUSE_TCL_STUBS $TCL_SHLIB_CFLAGS"
-    TCL_LIB_SPEC="${TCL_STUB_LIB_SPEC}"
+    TCL_LIB_SPEC="$TCL_STUB_LIB_SPEC"
+    SNACK_LIB_SPEC="${SNACK_STUB_LIB_SPEC}"
     if test "$TCLVER" = "8.0"; then
         AC_MSG_WARN("You probably forgot to specify --disable-stubs")
     fi
@@ -66,6 +70,7 @@ fi
 AC_SUBST(CC)
 AC_SUBST(CFLAGS)
 AC_SUBST(TCL_LIB_SPEC)
+AC_SUBST(SNACK_LIB_SPEC)
 dnl Checks for header files.
 AC_CHECK_HEADERS(string.h math.h locale.h)
 AC_HEADER_STDC
