@@ -1,7 +1,9 @@
-21 november 2011, Zurich    : Development of the SnackSndfileExt started.
-24 november 2011, Amsterdam : Most of the basic functionality are there.
-28 november 2011, Padova    : All the reading callbacks are there, but they
-   	    	  	      were never tested and probably are not working.
-			      Further information about hidden corner of
-			      snack2.2 were requested to its author.
-30 november 2011, Padova    : Basic packaging of the extension was started.
+21 november 2011, Zurich     : Development of the SnackSndfileExt started.
+24 november 2011, Amsterdam  : Most of the basic functionality are there.
+28 november 2011, Cittadella : All the reading callbacks are there, but they
+   	    	  	       were never tested and probably are not working.
+			       Further information about hidden corner of
+			       snack2.2 are needed.
+30 november 2011, Cittadella : Basic packaging of the extension is available.
+30 november 2011, Cittadella : First file played using snack and this extension.
+01 december 2011, Cittadella : Created github repository for the extension.

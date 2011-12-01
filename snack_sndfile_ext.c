@@ -1,4 +1,23 @@
-/* gcc $(pkg-config --cflags --libs sndfile) -lsnackstub2.2 -L/usr/lib/tcltk/snack2.2 -lsnack -I/usr/include/tcl8.4 -ltclstub -ltcl snack_sndfile_ext.c */
+/***********
+ *
+ * SnackSndfileExt snack2.2 extension that adds libsndfile support
+ * Copyright (C) 2011 Giulio Paci <giuliopaci@interfree.it>
+ *  
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ *  
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *  
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
+ *
+ ****/
 
 #include <tcl.h>
 #include <snack.h>
@@ -376,6 +395,7 @@ static int ReadSndSamples(Sound *s, Tcl_Interp *interp, Tcl_Channel ch, char *ib
 	fprintf(stderr, "ReadSndSample(..., %d)\n", len);
 	if( ( ch == NULL ) || ( sf_error((SNDFILE*) ch) != 0 ) )
 	{
+		fprintf(stderr, "ReadSndSample ERROR %d\n", sf_error((SNDFILE*) ch));
 		return -1;
 	}
 	/* int nframes = len / Snack_GetNumChannels(s); */
@@ -383,6 +403,25 @@ static int ReadSndSamples(Sound *s, Tcl_Interp *interp, Tcl_Channel ch, char *ib
 	/* return nframes * Snack_GetNumChannels(s); */
 	return sf_read_float ((SNDFILE*) ch, obuf, len);
 }
+
+
+static int WriteSndSamples(Sound *s, Tcl_Channel ch, Tcl_Obj *obj, int start, int length)
+{
+	fprintf(stderr, "WriteSndSample(..., %d, %d)\n", start, length);
+	fprintf(stderr, "WriteSndSample UNIMPLEMENTED");
+	if( ( ch == NULL ) || ( sf_error((SNDFILE*) ch) != 0 ) )
+	{
+		fprintf(stderr, "WriteSndSample ERROR %d\n", sf_error((SNDFILE*) ch));
+		return -1;
+	}
+	return -1;
+	/* int nframes = len / Snack_GetNumChannels(s); */
+	/* nframes = sf_readf_float ((SNDFILE*) ch, obuf, nframes); */
+	/* return nframes * Snack_GetNumChannels(s); */
+	/* return sf_write_float ((SNDFILE*) ch, obuf, len); */
+}
+
+
 
 Snack_FileFormat SndFileFormat =
 {
@@ -401,34 +440,33 @@ Snack_FileFormat SndFileFormat =
 	/* struct Snack_FileFormat* nextPtr; */ (Snack_FileFormat*) NULL
 };
 
-int main (int argc, char** args)
-{
-	int count = 200;
-	const char* format;
-	char* buffer = malloc(count);
-	FILE* f = fopen( args[1], "r" );
-	count = fread(buffer, 1, count, f);
-	fclose(f);
-	printf("%d\n", count);
-	format = GuessSndFile (buffer, count);
-	free(buffer);
-	if( format != NULL )
-	{
-		fprintf(stderr, "Recognition result: %s\n", format);
-	}
-	char* ret;
-	char* ext;
-	ext = ".sph";
-	fprintf(stderr, "Ext (%s) result: %s\n", ext, ( (( ret = ExtSndFile(ext)) == NULL) ? "none" : ret));
-	ext = ".ogg";
-	fprintf(stderr, "Ext (%s) result: %s\n", ext, ( (( ret = ExtSndFile(ext)) == NULL) ? "none" : ret));
-	ext = ".oga";
-	fprintf(stderr, "Ext (%s) result: %s\n", ext, ( (( ret = ExtSndFile(ext)) == NULL) ? "none" : ret));
-	ext = ".wav";
-	fprintf(stderr, "Ext (%s) result: %s\n", ext, ( (( ret = ExtSndFile(ext)) == NULL) ? "none" : ret));
-	return 0;
-}
-
+/* int main (int argc, char** args) */
+/* { */
+/* 	int count = 200; */
+/* 	const char* format; */
+/* 	char* buffer = malloc(count); */
+/* 	FILE* f = fopen( args[1], "r" ); */
+/* 	count = fread(buffer, 1, count, f); */
+/* 	fclose(f); */
+/* 	printf("%d\n", count); */
+/* 	format = GuessSndFile (buffer, count); */
+/* 	free(buffer); */
+/* 	if( format != NULL ) */
+/* 	{ */
+/* 		fprintf(stderr, "Recognition result: %s\n", format); */
+/* 	} */
+/* 	char* ret; */
+/* 	char* ext; */
+/* 	ext = ".sph"; */
+/* 	fprintf(stderr, "Ext (%s) result: %s\n", ext, ( (( ret = ExtSndFile(ext)) == NULL) ? "none" : ret)); */
+/* 	ext = ".ogg"; */
+/* 	fprintf(stderr, "Ext (%s) result: %s\n", ext, ( (( ret = ExtSndFile(ext)) == NULL) ? "none" : ret)); */
+/* 	ext = ".oga"; */
+/* 	fprintf(stderr, "Ext (%s) result: %s\n", ext, ( (( ret = ExtSndFile(ext)) == NULL) ? "none" : ret)); */
+/* 	ext = ".wav"; */
+/* 	fprintf(stderr, "Ext (%s) result: %s\n", ext, ( (( ret = ExtSndFile(ext)) == NULL) ? "none" : ret)); */
+/* 	return 0; */
+/* } */
 
 /* Called by "load libsnacksndfile" */
 EXPORT(int, Snack_sndfile_ext_Init) _ANSI_ARGS_((Tcl_Interp *interp))
