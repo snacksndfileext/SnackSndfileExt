@@ -267,7 +267,8 @@ static int OpenSndFile(Sound *s, Tcl_Interp *interp, Tcl_Channel *ch, char *mode
 		Tcl_AppendResult(interp, "SNDFILE: unable to open file: ", Snack_GetSoundFilename(s), "\n", sf_strerror(NULL), NULL);
 		return TCL_ERROR;
 	}
-
+	//sf_command (*ch, SFC_SET_NORM_FLOAT, NULL, SF_FALSE) ;
+	sf_command (*ch, SFC_SET_NORM_FLOAT, NULL, SF_TRUE) ;
 	return TCL_OK;
 }
 
@@ -384,8 +385,8 @@ static int GetSndHeader(Sound *s, Tcl_Interp *interp, Tcl_Channel ch, Tcl_Obj *o
 		/* LIN24PACKED */
 		break;
 	}
+	Snack_SetLength(s, file_info.frames);
 	Snack_SetHeaderSize(s, 0 /* ?? HEADERSIZE */);
-	Snack_SetLength(s, 0 /* ?? FRAMES COUNT */);
 
 	return TCL_OK;
 }
