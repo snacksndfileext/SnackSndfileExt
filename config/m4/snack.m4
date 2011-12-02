@@ -214,7 +214,6 @@ AC_DEFUN([SC_LOAD_SNACKCONFIG], [
      	fi
     done
     SNACK_STUB_LIB_SPEC=-L"${SNACK_BIN_DIR}"" ""${SNACK_STUB_LIB_FLAG}"
-    AC_MSG_RESULT([FOOOOOOOOOOOOOOOOOUND ${SNACK_STUB_LIB_SPEC}])
     # eval is required to do the SNACK_DBGX substitution
     eval "SNACK_LIB_FLAG=\"${SNACK_LIB_FLAG}\""
     eval "SNACK_LIB_SPEC=\"${SNACK_LIB_SPEC}\""
