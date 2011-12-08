@@ -133,7 +133,7 @@ static const char* ExtSndFile(const char* s)
 		{
 			fprintf( stderr, "\"%s\" Vs \"%s\"\n", format_info.extension, &s[l2 - l1]);
 			if ( (s[l2 - l1 - 1] == '.') && (strncasecmp(format_info.extension, &s[l2 - l1], l1) == 0)) {
-				return format_info.name;
+				return "SNDFILE_FORMAT";//format_info.name;
 			}
 		}
 	}
@@ -156,7 +156,7 @@ static const char* ExtSndFile(const char* s)
 		{
 			fprintf( stderr, "\"%s\" Vs \"%s\"\n", format_info.name, &s[l2 - l1]);
 			if ( (s[l2 - l1 - 1] == '.') && (strncasecmp(format_info.name, &s[l2 - l1], l1) == 0)) {
-				return format_info.name;
+				return "SNDFILE_FORMAT";//format_info.name;
 			}
 		}
 		tmp = strstr(format_info.name, "Sphere");
@@ -172,7 +172,7 @@ static const char* ExtSndFile(const char* s)
 			{
 				fprintf( stderr, "\"%s\" Vs \"%s\"\n", tmp, &s[l2 - l1]);
 				if ( (s[l2 - l1 - 1] == '.') && (strncasecmp(tmp, &s[l2 - l1], l1) == 0)) {
-					return format_info.name;
+				return "SNDFILE_FORMAT";//format_info.name;
 				}
 			}
 		}
@@ -259,7 +259,7 @@ static int SndOpenModeFromString(char* mode)
 
 static int OpenSndFile(Sound *s, Tcl_Interp *interp, Tcl_Channel *ch, char *mode)
 {
-	fprintf(stderr, "OpenSndFile\n");
+	fprintf(stderr, "OpenSndFile(%s)\n", Snack_GetSoundFilename(s));
 	SF_INFO sfinfo;
 	*ch = (Tcl_Channel) sf_open ( Snack_GetSoundFilename(s), SndOpenModeFromString(mode), &sfinfo );
 	if (*ch == NULL)
@@ -267,8 +267,8 @@ static int OpenSndFile(Sound *s, Tcl_Interp *interp, Tcl_Channel *ch, char *mode
 		Tcl_AppendResult(interp, "SNDFILE: unable to open file: ", Snack_GetSoundFilename(s), "\n", sf_strerror(NULL), NULL);
 		return TCL_ERROR;
 	}
-	//sf_command (*ch, SFC_SET_NORM_FLOAT, NULL, SF_FALSE) ;
-	sf_command (*ch, SFC_SET_NORM_FLOAT, NULL, SF_TRUE) ;
+	sf_command (*ch, SFC_SET_NORM_FLOAT, NULL, SF_FALSE) ;
+	//sf_command (*ch, SFC_SET_NORM_FLOAT, NULL, SF_TRUE) ;
 	return TCL_OK;
 }
 
@@ -320,8 +320,7 @@ static int GetSndHeader(Sound *s, Tcl_Interp *interp, Tcl_Channel ch, Tcl_Obj *o
 		Snack_WriteLogInt("      Setting channels", Snack_GetNumChannels(s));
 	}
 
-	ret = sf_command ((SNDFILE*) ch, SFC_GET_FORMAT_SUBTYPE, &file_info, sizeof(SF_INFO));
-	switch(file_info.format)
+	switch(file_info.format & SF_FORMAT_SUBMASK)
 	{
 	case SF_FORMAT_PCM_S8:
 	case SF_FORMAT_PCM_U8:
@@ -371,6 +370,7 @@ static int GetSndHeader(Sound *s, Tcl_Interp *interp, Tcl_Channel ch, Tcl_Obj *o
 	case SF_FORMAT_DPCM_16:
 	case SF_FORMAT_VORBIS:
 	default:
+		fprintf(stderr, "GetSndHeader: format defaults\n");
 		Snack_SetBytesPerSample(s, 4);
 		Snack_SetSampleEncoding(s, SNACK_FLOAT);
 		/* LIN16 */
