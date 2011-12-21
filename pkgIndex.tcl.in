@@ -1,0 +1,1 @@
+package ifneeded @PACKAGE@ @VERSION@ [list load [file join $dir libsnack_sndfile_ext[info sharedlibextension]]]

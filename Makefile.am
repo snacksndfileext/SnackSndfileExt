@@ -1,6 +1,9 @@
 # /* gcc $(pkg-config --cflags --libs sndfile) -lsnackstub2.2 -L/usr/lib/tcltk/snack2.2 -lsnack -I/usr/include/tcl8.4 -ltclstub -ltcl snack_sndfile_ext.c */
 ACLOCAL_AMFLAGS=-I config/m4
-lib_LTLIBRARIES = libsnack_sndfile_ext.la
+
+versionedpkglibdir = $(pkglibdir)@VERSION@
+versionedpkglib_DATA = pkgIndex.tcl
+versionedpkglib_LTLIBRARIES = libsnack_sndfile_ext.la
 
 libsnack_sndfile_ext_la_SOURCES = \
 	snack_sndfile_ext.c

@@ -30,6 +30,14 @@
 extern "C" {
 #endif
 
+#ifndef PACKAGE
+#  define PACKAGE "snack_sndfile_ext"
+#endif
+
+#ifndef PACKAGE_VERSION
+#  define PACKAGE_VERSION "0.0.1"
+#endif
+
 #if defined(__WIN32__)
 #  define WIN32_LEAN_AND_MEAN
 #  include <windows.h>
@@ -419,6 +427,12 @@ static int WriteSndSamples(Sound *s, Tcl_Channel ch, Tcl_Obj *obj, int start, in
 	/* int nframes = len / Snack_GetNumChannels(s); */
 	/* nframes = sf_readf_float ((SNDFILE*) ch, obuf, nframes); */
 	/* return nframes * Snack_GetNumChannels(s); */
+	/* Snack_GetSoundData(s, pos, pcmout, READBUFSIZE); */
+	/* if (s->readStatus == READ) { */
+	/*   buffer[j][i] = FSAMPLE(s, pos) / 32768.0f; */
+	/* } else { */
+	/*   buffer[j][i] = pcmout[k] / 32768.0f; */
+	/* } */
 	/* return sf_write_float ((SNDFILE*) ch, obuf, len); */
 }
 
@@ -487,11 +501,11 @@ EXPORT(int, Snack_sndfile_ext_Init) _ANSI_ARGS_((Tcl_Interp *interp))
 #endif
   
   
-	res = Tcl_PkgProvide(interp, "snacksndfile", sf_version_string());
+	res = Tcl_PkgProvide(interp, PACKAGE, PACKAGE_VERSION);
   
 	if (res != TCL_OK) return res;
 
-	Tcl_SetVar(interp, "snack::snacksndfile",  sf_version_string(),TCL_GLOBAL_ONLY);
+	Tcl_SetVar(interp, "snack::" PACKAGE,  PACKAGE_VERSION, TCL_GLOBAL_ONLY);
 
 	Snack_CreateFileFormat(&SndFileFormat);
 

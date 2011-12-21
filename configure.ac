@@ -81,6 +81,7 @@ AM_PROG_CC_C_O
 dnl Output.
 AC_CONFIG_FILES([
 Makefile
+pkgIndex.tcl
 ])
 
 AC_OUTPUT([])
