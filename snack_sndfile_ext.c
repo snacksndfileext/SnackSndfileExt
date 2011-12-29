@@ -1,7 +1,7 @@
 /***********
  *
  * SnackSndfileExt snack2.2 extension that adds libsndfile support
- * Copyright (C) 2011 Giulio Paci <giuliopaci@interfree.it>
+ * Copyright (C) 2011 Giulio Paci <giuliopaci@gmail.com>
  *  
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public

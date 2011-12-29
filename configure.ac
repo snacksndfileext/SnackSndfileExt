@@ -1,4 +1,4 @@
-AC_INIT([Snack SndFile Formats Extension], 0.0.1, [giuliopaci@interfree.it], snack_sndfile_ext)
+AC_INIT([Snack SndFile Formats Extension], 0.0.1, [giuliopaci@gmail.com], snack_sndfile_ext)
 
 dnl This file (configure.ac) revision.
 AC_REVISION([$Revision: 0 $])
