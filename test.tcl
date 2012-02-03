@@ -4,7 +4,7 @@ exec wish8.4 "$0" "$@"
 
 # 'info sharedlibext' returns '.dll' on Windows and '.so' on most Unix systems
 
-load usr/lib/libsnack_sndfile_ext[info sharedlibext]
+load usr/lib/snack_sndfile_ext0.0.1/libsnack_sndfile_ext[info sharedlibext]
 
 # Create a sound object
 
