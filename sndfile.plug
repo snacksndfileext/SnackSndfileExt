@@ -1,0 +1,58 @@
+# -*-Mode:Tcl-*-
+#
+# Copyright (C) 2012 Giampiero Salvi
+#
+# Based on Giulio Paci's libsndfile extension for snack
+#
+# Libsndfile blug-in for WaveSurfer
+#
+# -----------------------------------------------------------------------------
+
+if [info exists ::wsurf::Info(CurrentPluginPath)] {
+  set dir [file dirname $::wsurf::Info(CurrentPluginPath)]
+} else {
+  set dir [file dirname [info script]]
+}
+
+set shlib [file join $dir libsnack_sndfile_ext[info sharedlibextension]]
+
+if {[catch {load $shlib}] == 0} {
+  #catch {package require snack_sndfile_ext}
+  source [file join $dir snack_sndfile_ext.tcl]
+}
+
+if [info exists snack::snack_sndfile_ext::extTypesUC] {
+    wsurf::RegisterPlugin sndfile \
+	-description "This plug-in adds support for all the audio file\
+   formats supported by libsndfile. More information at\
+   http://www.mega-nerd.com/libsndfile/ and\
+   https://github.com/giuliopaci/SnackSndfileExt/.\
+   Note that the plug-in currently\
+   only supports reading the files." \
+	-url https://github.com/giuliopaci/SnackSndfileExt/
+    if {![info exists ::surf(extTypes)]} {
+	set ::surf(extTypes) {}
+    }
+    if {![info exists ::surf(loadTypes)]} {
+	set ::surf(loadTypes) {}
+    }
+    if {![info exists ::surf(loadKeys)]} {
+	set ::surf(loadKeys) {}
+    }
+#    variable snack::snack_sndfile_ext::extTypesUC
+#    variable snack::snack_sndfile_ext::loadTypes
+#    variable snack::snack_sndfile_ext::loadKeys
+
+    set ::surf(extTypes) [concat $::surf(extTypes) \
+			      $snack::snack_sndfile_ext::extTypesUC]
+    set ::surf(loadTypes) [concat $::surf(loadTypes) \
+			       $snack::snack_sndfile_ext::loadTypes]
+    set ::surf(loadKeys) [concat $::surf(loadKeys) \
+			      $snack::snack_sndfile_ext::loadKeys]
+    snack::addLoadTypes $::surf(loadTypes) $::surf(loadKeys)
+    snack::addExtTypes $::surf(extTypes)
+} else {
+    wsurf::RegisterPlugin sndfile \
+	-description "Not functional. Could not find the libsnack_sndfile_ext library."
+}
+
