@@ -141,7 +141,7 @@ static const char* ExtSndFile(const char* s)
 		{
 			fprintf( stderr, "\"%s\" Vs \"%s\"\n", format_info.extension, &s[l2 - l1]);
 			if ( (s[l2 - l1 - 1] == '.') && (strncasecmp(format_info.extension, &s[l2 - l1], l1) == 0)) {
-				return "SNDFILE_FORMAT";//format_info.name;
+				return format_info.name;
 			}
 		}
 	}
@@ -164,7 +164,7 @@ static const char* ExtSndFile(const char* s)
 		{
 			fprintf( stderr, "\"%s\" Vs \"%s\"\n", format_info.name, &s[l2 - l1]);
 			if ( (s[l2 - l1 - 1] == '.') && (strncasecmp(format_info.name, &s[l2 - l1], l1) == 0)) {
-				return "SNDFILE_FORMAT";//format_info.name;
+				return format_info.name;
 			}
 		}
 		tmp = strstr(format_info.name, "Sphere");
@@ -180,7 +180,7 @@ static const char* ExtSndFile(const char* s)
 			{
 				fprintf( stderr, "\"%s\" Vs \"%s\"\n", tmp, &s[l2 - l1]);
 				if ( (s[l2 - l1 - 1] == '.') && (strncasecmp(tmp, &s[l2 - l1], l1) == 0)) {
-				return "SNDFILE_FORMAT";//format_info.name;
+				return format_info.name;
 				}
 			}
 		}
@@ -231,7 +231,7 @@ static const char *GuessSndFile (char *buf, int len)
 		format_info.format = info.format;
 		int ret = sf_command (NULL /* sndfile */, SFC_GET_FORMAT_INFO, &format_info, sizeof(SF_FORMAT_INFO)) ;
 		fprintf(stderr, "%s [%s]\n", format_info.name, format_info.extension);
-		return "SNDFILE_FORMAT";//format_info.name;
+		return format_info.name; //"SNDFILE_FORMAT";//format_info.name;
 	}
 	
 	return NULL;
@@ -437,24 +437,6 @@ static int WriteSndSamples(Sound *s, Tcl_Channel ch, Tcl_Obj *obj, int start, in
 }
 
 
-
-Snack_FileFormat SndFileFormat =
-{
-	/* char* name; */ "SNDFILE_FORMAT",
-	/* guessFileTypeProc* guessProc; */ (guessFileTypeProc*) GuessSndFile,
-	/* getHeaderProc* getHeaderProc; */ GetSndHeader,
-	/* extensionFileTypeProc* extProc; */ (extensionFileTypeProc*) ExtSndFile,
-	/* putHeaderProc* putHeaderProc; */ NULL,
-	/* openProc* openProc; */ OpenSndFile,
-	/* closeProc* closeProc; */ CloseSndFile,
-	/* readSamplesProc* readProc; */ ReadSndSamples,
-	/* writeSamplesProc* writeProc; */ NULL,
-	/* seekProc* seekProc; */ SeekSndFile,
-	/* freeHeaderProc* freeHeaderProc; */ NULL,
-	/* configureProc* configureProc; */ NULL,
-	/* struct Snack_FileFormat* nextPtr; */ (Snack_FileFormat*) NULL
-};
-
 /* int main (int argc, char** args) */
 /* { */
 /* 	int count = 200; */
@@ -487,7 +469,11 @@ Snack_FileFormat SndFileFormat =
 EXPORT(int, Snack_sndfile_ext_Init) _ANSI_ARGS_((Tcl_Interp *interp))
 {
 	int res;
-  
+	int k, count ;
+        SF_FORMAT_INFO format_info ;
+	Snack_FileFormat *SndFileFormatPtr;
+
+
 #ifdef USE_TCL_STUBS
 	if (Tcl_InitStubs(interp, "8", 0) == NULL) {
 		return TCL_ERROR;
@@ -507,7 +493,35 @@ EXPORT(int, Snack_sndfile_ext_Init) _ANSI_ARGS_((Tcl_Interp *interp))
 
 	Tcl_SetVar(interp, "snack::" PACKAGE,  PACKAGE_VERSION, TCL_GLOBAL_ONLY);
 
-	Snack_CreateFileFormat(&SndFileFormat);
+	fprintf(stderr, "ciaooo\n");
+
+        sf_command (NULL, SFC_GET_FORMAT_MAJOR_COUNT, &count, sizeof (int));
+
+        for (k = 0 ; k < count ; k++)
+        {
+	  format_info.format = k ;
+	  //	  fprintf(stderr, "SNDFILE: adding format name: ");
+	  sf_command (NULL, SFC_GET_FORMAT_MAJOR, &format_info, sizeof (SF_FORMAT_INFO));
+	  fprintf(stderr, "{{%s} {.%s}}\n", format_info.name, format_info.extension);
+
+	  SndFileFormatPtr = (Snack_FileFormat *) malloc(sizeof(Snack_FileFormat));
+	  SndFileFormatPtr->name = (char *) malloc(strlen(format_info.name)+1);
+	  SndFileFormatPtr->guessProc = (guessFileTypeProc*) GuessSndFile;
+	  SndFileFormatPtr->getHeaderProc = GetSndHeader;
+	  SndFileFormatPtr->extProc = (extensionFileTypeProc*) ExtSndFile;
+	  SndFileFormatPtr->putHeaderProc =  NULL;
+	  SndFileFormatPtr->openProc =  OpenSndFile;
+	  SndFileFormatPtr->closeProc =  CloseSndFile;
+	  SndFileFormatPtr->readProc =  ReadSndSamples;
+	  SndFileFormatPtr->writeProc =  NULL;
+	  SndFileFormatPtr->seekProc =  SeekSndFile;
+	  SndFileFormatPtr->freeHeaderProc =  NULL;
+	  SndFileFormatPtr->configureProc = NULL;
+	  SndFileFormatPtr->nextPtr = (Snack_FileFormat*) NULL;
+
+	  strcpy(SndFileFormatPtr->name, format_info.name);
+	  Snack_CreateFileFormat(SndFileFormatPtr);
+	}
 
 	return TCL_OK;
 }
