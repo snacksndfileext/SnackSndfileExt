@@ -1,4 +1,8 @@
 # Giampiero Salvi <giampi@kth.se> 2012-05-11:
+#
+# This file adds the snack magic to make the formats provided by the
+# snack_sndfile_ext extension available.
+#
 # These types are based on libsndfile version 1.0.25. Optimally this information
 # should be generated automatically, for example with code similar to the one in
 # examples/list_formats.c (in the libsndfile distribution).
@@ -75,5 +79,8 @@ namespace eval snack::snack_sndfile_ext {
 	lappend extTypesUC [list $type $ext]
 	lappend loadKeys $type
     }
+
+    snack::addLoadTypes $loadTypes $loadKeys
+    snack::addExtTypes $extTypesUC
 }
 
