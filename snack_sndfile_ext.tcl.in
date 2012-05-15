@@ -3,19 +3,19 @@
 # This file adds the snack magic to make the formats provided by the
 # snack_sndfile_ext extension available.
 #
-# These types are based on libsndfile version 1.0.25. Optimally this information
-# should be generated automatically, for example with code similar to the one in
-# examples/list_formats.c (in the libsndfile distribution).
+# The lists of formats are based on libsndfile version 1.0.25. Optimally this
+# information should be generated automatically, for example with code similar
+# to the one in examples/list_formats.c (in the libsndfile distribution).
 
-package provide snack_sndfile_ext 0.0.1
+package provide @PACKAGE@ @VERSION@
 package require snack
 
 namespace eval snack::snack_sndfile_ext {
-    variable extTypesUC
+    variable extTypes
     variable loadTypes
     variable loadKeys
 
-    set extTypes {
+    set extTypesMC {
 	{{AIFF (Apple/SGI)} .aiff}
 	{{AU (Sun/NeXT)} .au}
 	{{AVR (Audio Visual Research)} .avr}
@@ -71,16 +71,16 @@ namespace eval snack::snack_sndfile_ext {
 	{{XI (FastTracker 2)} {.xi .XI}}
     }
 
-    set extTypesUC [list]
+    set extTypes [list]
     set loadKeys [list]
-    foreach pair $extTypes {
+    foreach pair $extTypesMC {
 	set type [string toupper [lindex $pair 0]]
 	set ext [lindex $pair 1]
-	lappend extTypesUC [list $type $ext]
+	lappend extTypes [list $type $ext]
 	lappend loadKeys $type
     }
 
     snack::addLoadTypes $loadTypes $loadKeys
-    snack::addExtTypes $extTypesUC
+    snack::addExtTypes $extTypes
 }
 

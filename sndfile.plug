@@ -29,7 +29,7 @@ if {$res} {
 # as snack. This is redundant as it is already done when loading the package,
 # but it is necessary to let wavesurfer aware of the format in case other
 # plugins add their own formats.
-if [info exists snack::snack_sndfile_ext::extTypesUC] {
+if [info exists snack::snack_sndfile_ext::extTypes] {
     wsurf::RegisterPlugin sndfile \
 	-description "This plug-in adds support for all the audio file\
    formats supported by libsndfile. More information at\
@@ -49,7 +49,7 @@ if [info exists snack::snack_sndfile_ext::extTypesUC] {
 	set ::surf(loadKeys) {}
     }
     set ::surf(extTypes) [concat $::surf(extTypes) \
-			      $snack::snack_sndfile_ext::extTypesUC]
+			      $snack::snack_sndfile_ext::extTypes]
     set ::surf(loadTypes) [concat $::surf(loadTypes) \
 			       $snack::snack_sndfile_ext::loadTypes]
     set ::surf(loadKeys) [concat $::surf(loadKeys) \
