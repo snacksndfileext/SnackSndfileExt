@@ -493,16 +493,12 @@ EXPORT(int, Snack_sndfile_ext_Init) _ANSI_ARGS_((Tcl_Interp *interp))
 
 	Tcl_SetVar(interp, "snack::" PACKAGE,  PACKAGE_VERSION, TCL_GLOBAL_ONLY);
 
-	fprintf(stderr, "ciaooo\n");
-
         sf_command (NULL, SFC_GET_FORMAT_MAJOR_COUNT, &count, sizeof (int));
 
         for (k = 0 ; k < count ; k++)
         {
 	  format_info.format = k ;
-	  //	  fprintf(stderr, "SNDFILE: adding format name: ");
 	  sf_command (NULL, SFC_GET_FORMAT_MAJOR, &format_info, sizeof (SF_FORMAT_INFO));
-	  fprintf(stderr, "{{%s} {.%s}}\n", format_info.name, format_info.extension);
 
 	  SndFileFormatPtr = (Snack_FileFormat *) malloc(sizeof(Snack_FileFormat));
 	  SndFileFormatPtr->name = (char *) malloc(strlen(format_info.name)+1);
