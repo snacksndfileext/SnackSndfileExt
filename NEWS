@@ -7,3 +7,8 @@
 30 november 2011, Cittadella : Basic packaging of the extension is available.
 30 november 2011, Cittadella : First file played using snack and this extension.
 01 december 2011, Cittadella : Created github repository for the extension.
+15 may      2012, Stockholm  : Added snack support for individual formats
+                               instead of a single generic SNDFILE format.
+                               Added snack magic (snack_sndfile_ext.tcl) to
+                               make it work even after the first opened file.
+			       Added Wavesurfer plugin file.
