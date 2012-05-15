@@ -15,3 +15,20 @@ me (e.g.: I will not evaluate BSD-like licenses).
 
 The extension is still young and probably plenty of BUGs. BUG reports,
 patches and suggestions are welcome.
+
+To build and install the tcl package, follow the instructions in the
+file INSTALL. For the inpatient:
+./configure
+make
+make install
+
+To build a Wavesurfer plugin without installing the package, copy the
+following files into your .wavesurfer/<version>/plugin directory:
+
+snack_sndfile_ext.tcl
+sndfile.plug
+libsnack_sndfile_ext.so
+libsnack_sndfile_ext.so.0.0.0
+
+these instructions are given for posix systems, for Windows, copy the
+dll files instead.
