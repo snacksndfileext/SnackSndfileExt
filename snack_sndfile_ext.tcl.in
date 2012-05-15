@@ -1,15 +1,32 @@
-# Giampiero Salvi <giampi@kth.se> 2012-05-11:
+# snack_sndfile_ext.tcl tcl part of Giulio Paci's SnackSndfileExt
+#
+# Copyright (C) 2012 Giampiero Salvi <giampi@kth.se>
 #
 # This file adds the snack magic to make the formats provided by the
 # snack_sndfile_ext extension available.
 #
-# The lists of formats are based on libsndfile version 1.0.25. Optimally this
-# information should be generated automatically, for example with code similar
-# to the one in examples/list_formats.c (in the libsndfile distribution).
+# This library is free software; you can redistribute it and/or
+# modify it under the terms of the GNU Lesser General Public
+# License as published by the Free Software Foundation; either
+# version 2.1 of the License, or (at your option) any later version.
+# 
+# This library is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+# Lesser General Public License for more details.
+# 
+# You should have received a copy of the GNU Lesser General Public
+# License along with this library; if not, write to the Free Software
+# Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
+#
+# --------------------------------------------------------------------
 
 package provide @PACKAGE@ @VERSION@
 package require snack
 
+# The lists of formats are based on libsndfile version 1.0.25. Optimally this
+# information should be generated automatically, for example with code similar
+# to the one in examples/list_formats.c (in the libsndfile distribution).
 namespace eval snack::snack_sndfile_ext {
     variable extTypes
     variable loadTypes
