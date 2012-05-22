@@ -231,7 +231,7 @@ static const char *GuessSndFile (char *buf, int len)
 		format_info.format = info.format;
 		int ret = sf_command (NULL /* sndfile */, SFC_GET_FORMAT_INFO, &format_info, sizeof(SF_FORMAT_INFO)) ;
 		fprintf(stderr, "%s [%s]\n", format_info.name, format_info.extension);
-		return format_info.name; //"SNDFILE_FORMAT";//format_info.name;
+		return format_info.name;
 	}
 	
 	return NULL;

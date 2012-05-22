@@ -46,12 +46,14 @@ if {$res} {
 if [info exists snack::snack_sndfile_ext::extTypes] {
     wsurf::RegisterPlugin sndfile \
 	-description "This plug-in adds support for all the audio file\
-   formats supported by libsndfile. More information at\
-   http://www.mega-nerd.com/libsndfile/,\
-   https://github.com/giuliopaci/SnackSndfileExt/, and\
-   https://github.com/giampierosalvi/SnackSndfileExt/.\
-   Note that the plug-in currently\
-   only supports reading the files." \
+   formats supported by libsndfile. Note that the plug-in currently\
+   only supports reading the files.\
+   The plug-in has been developed by Giulio Paci, with valuable\
+   contributions from Giampiero Salvi.\
+   For more information http://www.mega-nerd.com/libsndfile/,\
+   https://github.com/giuliopaci/SnackSndfileExt/.\
+   If you have any question, feel free to contact\
+   Giulio Paci <giuliopaci@gmail.com>." \
 	-url https://github.com/giuliopaci/SnackSndfileExt/
     if {![info exists ::surf(extTypes)]} {
 	set ::surf(extTypes) {}
