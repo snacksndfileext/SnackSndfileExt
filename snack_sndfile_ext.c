@@ -501,7 +501,9 @@ EXPORT(int, Snack_sndfile_ext_Init) _ANSI_ARGS_((Tcl_Interp *interp))
 	  sf_command (NULL, SFC_GET_FORMAT_MAJOR, &format_info, sizeof (SF_FORMAT_INFO));
 
 	  SndFileFormatPtr = (Snack_FileFormat *) malloc(sizeof(Snack_FileFormat));
-	  SndFileFormatPtr->name = (char *) malloc(strlen(format_info.name)+1);
+	  //SndFileFormatPtr->name = (char *) malloc(strlen(format_info.name)+1);
+	  /* only copy pointer to format name */
+	  SndFileFormatPtr->name = format_info.name;
 	  SndFileFormatPtr->guessProc = (guessFileTypeProc*) GuessSndFile;
 	  SndFileFormatPtr->getHeaderProc = GetSndHeader;
 	  SndFileFormatPtr->extProc = (extensionFileTypeProc*) ExtSndFile;
@@ -515,7 +517,7 @@ EXPORT(int, Snack_sndfile_ext_Init) _ANSI_ARGS_((Tcl_Interp *interp))
 	  SndFileFormatPtr->configureProc = NULL;
 	  SndFileFormatPtr->nextPtr = (Snack_FileFormat*) NULL;
 
-	  strcpy(SndFileFormatPtr->name, format_info.name);
+	  //strcpy(SndFileFormatPtr->name, format_info.name);
 	  Snack_CreateFileFormat(SndFileFormatPtr);
 	}
 
