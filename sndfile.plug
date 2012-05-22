@@ -34,9 +34,7 @@ set res [catch {package require snack_sndfile_ext}]
 # if it didn't work, load the version coming with this plugin
 if {$res} {
     set shlib [file join $dir libsnack_sndfile_ext[info sharedlibextension]]
-    if {[catch {load $shlib}] == 0} {
-	source [file join $dir snack_sndfile_ext.tcl]
-    }
+    catch {load $shlib}
 }
 
 # here check if plugin is functional and add formats to wavesurfer as well
