@@ -465,6 +465,72 @@ static int WriteSndSamples(Sound *s, Tcl_Channel ch, Tcl_Obj *obj, int start, in
 /* 	return 0; */
 /* } */
 
+/* This function is used instead of the snack_sndfile_ext.tcl script in order
+   to generate the tcl variables that are needed by snack. Doing it here allows
+   keeping the formats always up to date with the current version of libsndfile
+*/
+int CreateTclVariablesForSnack(Tcl_Interp *interp)
+{
+  int k, count ;
+  SF_FORMAT_INFO format_info ;
+  Tcl_Obj *scriptPtr = Tcl_NewStringObj("", 0);
+  Tcl_Obj *scriptPtr1 = Tcl_NewStringObj("", 0);
+  Tcl_Obj *scriptPtr2 = Tcl_NewStringObj("", 0);
+  Tcl_Obj *formatExtUC = Tcl_NewStringObj("", 0);
+
+  Tcl_AppendStringsToObj(scriptPtr,
+			 "namespace eval snack::snack_sndfile_ext {\n",
+			 "    variable extTypes\n",
+			 "    variable loadTypes\n",
+			 "    variable loadKeys\n\n", (char *) NULL);
+  Tcl_AppendStringsToObj(scriptPtr1, "    set extTypesMC {\n", (char *) NULL);
+  Tcl_AppendStringsToObj(scriptPtr2, "    set loadTypes {\n", (char *) NULL);
+
+  sf_command (NULL, SFC_GET_FORMAT_MAJOR_COUNT, &count, sizeof (int));
+  
+  for (k = 0 ; k < count ; k++) {
+    format_info.format = k ;
+    sf_command (NULL, SFC_GET_FORMAT_MAJOR, &format_info, sizeof (SF_FORMAT_INFO));
+
+    /* convert extension to upper case */
+    Tcl_SetStringObj(formatExtUC, format_info.extension, strlen(format_info.extension));
+    Tcl_UtfToUpper(Tcl_GetString(formatExtUC));
+
+    /* append to variable extTypesMC */
+    Tcl_AppendStringsToObj(scriptPtr1, "        {{", format_info.name,
+			   "} .", format_info.extension, "}\n", (char *) NULL);
+
+    /* append to variable loadTypes */
+    Tcl_AppendStringsToObj(scriptPtr2, "        {{", format_info.name,
+			   "} {.", format_info.extension,
+			   " .", Tcl_GetString(formatExtUC),
+			   "}}\n", (char *) NULL);
+  }
+  Tcl_AppendStringsToObj(scriptPtr1, "    }\n\n", (char *) NULL);
+  Tcl_AppendStringsToObj(scriptPtr2, "    }\n\n", (char *) NULL);
+
+  Tcl_AppendObjToObj(scriptPtr, scriptPtr1);
+  Tcl_AppendObjToObj(scriptPtr, scriptPtr2);
+
+  Tcl_AppendStringsToObj(scriptPtr,
+			 "    set extTypes [list]\n",
+			 "    set loadKeys [list]\n",
+			 "    foreach pair $extTypesMC {\n",
+			 "	set type [string toupper [lindex $pair 0]]\n",
+			 "	set ext [lindex $pair 1]\n",
+			 "	lappend extTypes [list $type $ext]\n",
+			 "	lappend loadKeys $type\n"
+			 "    }\n\n",
+			 "    snack::addLoadTypes $loadTypes $loadKeys\n",
+			 "    snack::addExtTypes $extTypes\n",
+			 "}\n", (char *) NULL);
+
+  fprintf(stderr, "%s\n", Tcl_GetString(scriptPtr));
+
+  return Tcl_EvalObjEx(interp, scriptPtr, TCL_EVAL_DIRECT);
+}
+
+
 /* Called by "load libsnacksndfile" */
 EXPORT(int, Snack_sndfile_ext_Init) _ANSI_ARGS_((Tcl_Interp *interp))
 {
@@ -472,7 +538,6 @@ EXPORT(int, Snack_sndfile_ext_Init) _ANSI_ARGS_((Tcl_Interp *interp))
 	int k, count ;
         SF_FORMAT_INFO format_info ;
 	Snack_FileFormat *SndFileFormatPtr;
-
 
 #ifdef USE_TCL_STUBS
 	if (Tcl_InitStubs(interp, "8", 0) == NULL) {
@@ -501,7 +566,8 @@ EXPORT(int, Snack_sndfile_ext_Init) _ANSI_ARGS_((Tcl_Interp *interp))
 	  sf_command (NULL, SFC_GET_FORMAT_MAJOR, &format_info, sizeof (SF_FORMAT_INFO));
 
 	  SndFileFormatPtr = (Snack_FileFormat *) malloc(sizeof(Snack_FileFormat));
-	  SndFileFormatPtr->name = (char *) malloc(strlen(format_info.name)+1);
+	  /* only copy pointer to format name */
+	  SndFileFormatPtr->name = format_info.name;
 	  SndFileFormatPtr->guessProc = (guessFileTypeProc*) GuessSndFile;
 	  SndFileFormatPtr->getHeaderProc = GetSndHeader;
 	  SndFileFormatPtr->extProc = (extensionFileTypeProc*) ExtSndFile;
@@ -515,11 +581,10 @@ EXPORT(int, Snack_sndfile_ext_Init) _ANSI_ARGS_((Tcl_Interp *interp))
 	  SndFileFormatPtr->configureProc = NULL;
 	  SndFileFormatPtr->nextPtr = (Snack_FileFormat*) NULL;
 
-	  strcpy(SndFileFormatPtr->name, format_info.name);
 	  Snack_CreateFileFormat(SndFileFormatPtr);
 	}
 
-	return TCL_OK;
+	return CreateTclVariablesForSnack(interp);
 }
 
 EXPORT(int, Snacksndfile_SafeInit)(Tcl_Interp *interp)

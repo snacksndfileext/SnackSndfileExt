@@ -25,7 +25,6 @@ make install
 To build a Wavesurfer plugin without installing the package, copy the
 following files into your .wavesurfer/<version>/plugins directory:
 
-snack_sndfile_ext.tcl
 sndfile.plug
 libsnack_sndfile_ext.so
 libsnack_sndfile_ext.so.0.0.0
