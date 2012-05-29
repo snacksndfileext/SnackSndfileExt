@@ -49,7 +49,7 @@ if [info exists snack::snack_sndfile_ext::extTypes] {
    The plug-in has been developed by Giulio Paci, with valuable\
    contributions from Giampiero Salvi.\
    For more information http://www.mega-nerd.com/libsndfile/,\
-   https://github.com/giuliopaci/SnackSndfileExt/.\
+   https://github.com/snacksndfileext/SnackSndfileExt/.\
    If you have any question, feel free to contact\
    Giulio Paci <giuliopaci@gmail.com>." \
 	-url https://github.com/giuliopaci/SnackSndfileExt/
