@@ -68,7 +68,7 @@ static sf_count_t dummy_vio_get_filelen (void *user_data)
 static sf_count_t dummy_vio_read (void *ptr, sf_count_t count, void *user_data)
 {
 	struct dummy_file *file = (struct dummy_file*) user_data;
-	fprintf(stderr, "read %d\n", count);
+	/* fprintf(stderr, "read %d\n", count); */
 	if( count + file->curpos > file->length )
 	{
 		count = file->length - file->curpos;
@@ -267,7 +267,7 @@ static int SndOpenModeFromString(char* mode)
 
 static int OpenSndFile(Sound *s, Tcl_Interp *interp, Tcl_Channel *ch, char *mode)
 {
-	fprintf(stderr, "OpenSndFile(%s)\n", Snack_GetSoundFilename(s));
+	/* fprintf(stderr, "OpenSndFile(%s)\n", Snack_GetSoundFilename(s)); */
 	SF_INFO sfinfo;
 	*ch = (Tcl_Channel) sf_open ( Snack_GetSoundFilename(s), SndOpenModeFromString(mode), &sfinfo );
 	if (*ch == NULL)
@@ -275,20 +275,20 @@ static int OpenSndFile(Sound *s, Tcl_Interp *interp, Tcl_Channel *ch, char *mode
 		Tcl_AppendResult(interp, "SNDFILE: unable to open file: ", Snack_GetSoundFilename(s), "\n", sf_strerror(NULL), NULL);
 		return TCL_ERROR;
 	}
-	sf_command (*ch, SFC_SET_NORM_FLOAT, NULL, SF_FALSE) ;
-	//sf_command (*ch, SFC_SET_NORM_FLOAT, NULL, SF_TRUE) ;
+	sf_command ((void*) *ch, SFC_SET_NORM_FLOAT, NULL, SF_FALSE) ;
+	/* sf_command (*ch, SFC_SET_NORM_FLOAT, NULL, SF_TRUE) ; */
 	return TCL_OK;
 }
 
 static int SeekSndFile(Sound *s, Tcl_Interp *interp, Tcl_Channel ch, int pos)
 {
-	fprintf(stderr, "SeekSndFile\n");
+	/* fprintf(stderr, "SeekSndFile\n"); */
 	return sf_seek ((SNDFILE*) ch, pos, SEEK_SET);
 }
 
 static int CloseSndFile(Sound *s, Tcl_Interp *interp, Tcl_Channel *ch)
 {
-	fprintf(stderr, "CloseSndFile\n");
+	/* fprintf(stderr, "CloseSndFile\n"); */
 	int err = sf_close((SNDFILE*) *ch);
 	if (err != 0)
 	{
@@ -301,7 +301,7 @@ static int CloseSndFile(Sound *s, Tcl_Interp *interp, Tcl_Channel *ch)
 
 static int GetSndHeader(Sound *s, Tcl_Interp *interp, Tcl_Channel ch, Tcl_Obj *obj, char *buf)
 {
-	fprintf(stderr, "GetSndHeader\n");
+	/* fprintf(stderr, "GetSndHeader\n"); */
 	if (obj != NULL)
 	{
 		Tcl_AppendResult(interp, "'data' subcommand forbidden for SNDFILE format", NULL);
@@ -401,10 +401,10 @@ static int GetSndHeader(Sound *s, Tcl_Interp *interp, Tcl_Channel ch, Tcl_Obj *o
 
 static int ReadSndSamples(Sound *s, Tcl_Interp *interp, Tcl_Channel ch, char *ibuf, float *obuf, int len)
 {
-	fprintf(stderr, "ReadSndSample(..., %d)\n", len);
+	/* fprintf(stderr, "ReadSndSample(..., %d)\n", len); */
 	if( ( ch == NULL ) || ( sf_error((SNDFILE*) ch) != 0 ) )
 	{
-		fprintf(stderr, "ReadSndSample ERROR %d\n", sf_error((SNDFILE*) ch));
+		/* fprintf(stderr, "ReadSndSample ERROR %d\n", sf_error((SNDFILE*) ch)); */
 		return -1;
 	}
 	/* int nframes = len / Snack_GetNumChannels(s); */
@@ -436,34 +436,6 @@ static int WriteSndSamples(Sound *s, Tcl_Channel ch, Tcl_Obj *obj, int start, in
 	/* return sf_write_float ((SNDFILE*) ch, obuf, len); */
 }
 
-
-/* int main (int argc, char** args) */
-/* { */
-/* 	int count = 200; */
-/* 	const char* format; */
-/* 	char* buffer = malloc(count); */
-/* 	FILE* f = fopen( args[1], "r" ); */
-/* 	count = fread(buffer, 1, count, f); */
-/* 	fclose(f); */
-/* 	printf("%d\n", count); */
-/* 	format = GuessSndFile (buffer, count); */
-/* 	free(buffer); */
-/* 	if( format != NULL ) */
-/* 	{ */
-/* 		fprintf(stderr, "Recognition result: %s\n", format); */
-/* 	} */
-/* 	char* ret; */
-/* 	char* ext; */
-/* 	ext = ".sph"; */
-/* 	fprintf(stderr, "Ext (%s) result: %s\n", ext, ( (( ret = ExtSndFile(ext)) == NULL) ? "none" : ret)); */
-/* 	ext = ".ogg"; */
-/* 	fprintf(stderr, "Ext (%s) result: %s\n", ext, ( (( ret = ExtSndFile(ext)) == NULL) ? "none" : ret)); */
-/* 	ext = ".oga"; */
-/* 	fprintf(stderr, "Ext (%s) result: %s\n", ext, ( (( ret = ExtSndFile(ext)) == NULL) ? "none" : ret)); */
-/* 	ext = ".wav"; */
-/* 	fprintf(stderr, "Ext (%s) result: %s\n", ext, ( (( ret = ExtSndFile(ext)) == NULL) ? "none" : ret)); */
-/* 	return 0; */
-/* } */
 
 /* This function is used instead of the snack_sndfile_ext.tcl script in order
    to generate the tcl variables that are needed by snack. Doing it here allows
@@ -525,7 +497,7 @@ int CreateTclVariablesForSnack(Tcl_Interp *interp)
 			 "    snack::addExtTypes $extTypes\n",
 			 "}\n", (char *) NULL);
 
-  fprintf(stderr, "%s\n", Tcl_GetString(scriptPtr));
+  /* fprintf(stderr, "%s\n", Tcl_GetString(scriptPtr)); */
 
   return Tcl_EvalObjEx(interp, scriptPtr, TCL_EVAL_DIRECT);
 }
