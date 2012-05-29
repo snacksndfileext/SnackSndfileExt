@@ -2,7 +2,7 @@
 ACLOCAL_AMFLAGS=-I config/m4
 
 versionedpkglibdir = $(pkglibdir)@VERSION@
-versionedpkglib_DATA = pkgIndex.tcl snack_sndfile_ext.tcl
+versionedpkglib_DATA = pkgIndex.tcl
 versionedpkglib_LTLIBRARIES = libsnack_sndfile_ext.la
 
 libsnack_sndfile_ext_la_SOURCES = \

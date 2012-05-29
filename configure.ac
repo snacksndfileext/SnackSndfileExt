@@ -82,7 +82,6 @@ dnl Output.
 AC_CONFIG_FILES([
 Makefile
 pkgIndex.tcl
-snack_sndfile_ext.tcl
 ])
 
 AC_OUTPUT([])
