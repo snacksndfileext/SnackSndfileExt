@@ -52,7 +52,7 @@ if [info exists snack::snack_sndfile_ext::extTypes] {
    https://github.com/snacksndfileext/SnackSndfileExt/.\
    If you have any question, feel free to contact\
    Giulio Paci <giuliopaci@gmail.com>." \
-	-url https://github.com/giuliopaci/SnackSndfileExt/
+	-url https://github.com/snacksndfileext/SnackSndfileExt/
     if {![info exists ::surf(extTypes)]} {
 	set ::surf(extTypes) {}
     }
