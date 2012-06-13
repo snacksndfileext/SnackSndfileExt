@@ -90,7 +90,7 @@ static sf_count_t dummy_vio_write (const void *ptr, sf_count_t count, void *user
 static sf_count_t dummy_vio_seek (sf_count_t offset, int whence, void *user_data)
 {
 	struct dummy_file *file = (struct dummy_file*) user_data;
-	fprintf(stderr, "seek %d %d\n", whence, offset);
+	/* fprintf(stderr, "seek %d %d\n", whence, offset); */
 	sf_count_t newpos = 0;
 	switch(whence)
 	{
@@ -135,12 +135,12 @@ static const char* ExtSndFile(const char* s)
         {
 		format_info.format = k ;
 		sf_command (NULL, SFC_GET_FORMAT_MAJOR, &format_info, sizeof (SF_FORMAT_INFO));
-		fprintf (stderr, "%08x  %s %s\n", format_info.format, format_info.name, format_info.extension) ;
+		/* fprintf (stderr, "%08x  %s %s\n", format_info.format, format_info.name, format_info.extension) ; */
 
 		int l1 = strlen(format_info.extension);
 		if( l2 > l1 )
 		{
-			fprintf( stderr, "\"%s\" Vs \"%s\"\n", format_info.extension, &s[l2 - l1]);
+			/* fprintf( stderr, "\"%s\" Vs \"%s\"\n", format_info.extension, &s[l2 - l1]); */
 			if ( (s[l2 - l1 - 1] == '.') && (strncasecmp(format_info.extension, &s[l2 - l1], l1) == 0)) {
 				return format_info.name;
 			}
@@ -150,7 +150,7 @@ static const char* ExtSndFile(const char* s)
         {
 		format_info.format = k ;
 		sf_command (NULL, SFC_GET_FORMAT_MAJOR, &format_info, sizeof (SF_FORMAT_INFO));
-		fprintf (stderr, "%08x  %s %s\n", format_info.format, format_info.name, format_info.extension) ;
+		/* fprintf (stderr, "%08x  %s %s\n", format_info.format, format_info.name, format_info.extension) ; */
 		char* tmp = strchr(format_info.name, ' ');
 		int l1;
 		if( tmp == NULL)
@@ -163,7 +163,7 @@ static const char* ExtSndFile(const char* s)
 		}
 		if( l2 > l1 )
 		{
-			fprintf( stderr, "\"%s\" Vs \"%s\"\n", format_info.name, &s[l2 - l1]);
+			/* fprintf( stderr, "\"%s\" Vs \"%s\"\n", format_info.name, &s[l2 - l1]); */
 			if ( (s[l2 - l1 - 1] == '.') && (strncasecmp(format_info.name, &s[l2 - l1], l1) == 0)) {
 				return format_info.name;
 			}
@@ -179,7 +179,7 @@ static const char* ExtSndFile(const char* s)
 			l1 = 3;
 			if( l2 > l1 )
 			{
-				fprintf( stderr, "\"%s\" Vs \"%s\"\n", tmp, &s[l2 - l1]);
+				/* fprintf( stderr, "\"%s\" Vs \"%s\"\n", tmp, &s[l2 - l1]); */
 				if ( (s[l2 - l1 - 1] == '.') && (strncasecmp(tmp, &s[l2 - l1], l1) == 0)) {
 				return format_info.name;
 				}
@@ -231,7 +231,7 @@ static const char *GuessSndFile (char *buf, int len)
 		SF_FORMAT_INFO format_info;
 		format_info.format = info.format;
 		int ret = sf_command (NULL /* sndfile */, SFC_GET_FORMAT_INFO, &format_info, sizeof(SF_FORMAT_INFO)) ;
-		fprintf(stderr, "%s [%s]\n", format_info.name, format_info.extension);
+		/* fprintf(stderr, "%s [%s]\n", format_info.name, format_info.extension); */
 		return format_info.name;
 	}
 	
@@ -379,7 +379,7 @@ static int GetSndHeader(Sound *s, Tcl_Interp *interp, Tcl_Channel ch, Tcl_Obj *o
 	case SF_FORMAT_DPCM_16:
 	case SF_FORMAT_VORBIS:
 	default:
-		fprintf(stderr, "GetSndHeader: format defaults\n");
+		/* fprintf(stderr, "GetSndHeader: format defaults\n"); */
 		Snack_SetBytesPerSample(s, 4);
 		Snack_SetSampleEncoding(s, SNACK_FLOAT);
 		/* LIN16 */
