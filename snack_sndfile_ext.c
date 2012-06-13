@@ -540,7 +540,7 @@ EXPORT(int, Snack_sndfile_ext_Init) _ANSI_ARGS_((Tcl_Interp *interp))
 
 	  SndFileFormatPtr = (Snack_FileFormat *) malloc(sizeof(Snack_FileFormat));
 	  /* only copy pointer to format name */
-	  SndFileFormatPtr->name = format_info.name;
+	  SndFileFormatPtr->name = (char*) format_info.name;
 	  SndFileFormatPtr->guessProc = (guessFileTypeProc*) GuessSndFile;
 	  SndFileFormatPtr->getHeaderProc = GetSndHeader;
 	  SndFileFormatPtr->extProc = (extensionFileTypeProc*) ExtSndFile;
