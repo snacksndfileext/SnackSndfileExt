@@ -16,8 +16,7 @@ AM_MAINTAINER_MODE
 dnl Checks for programs.
 AC_PROG_CC
 
-AC_LIBTOOL_WIN32_DLL
-AC_PROG_LIBTOOL
+LT_INIT([disable-static win32-dll])
 
 SC_PATH_TCLCONFIG
 dnl SC_PATH_TKCONFIG
@@ -72,8 +71,7 @@ AC_SUBST(CFLAGS)
 AC_SUBST(TCL_LIB_SPEC)
 AC_SUBST(SNACK_LIB_SPEC)
 dnl Checks for header files.
-AC_CHECK_HEADERS(string.h math.h locale.h)
-AC_HEADER_STDC
+AC_CHECK_HEADERS([string.h math.h locale.h], [], [], [AC_INCLUDES_DEFAULT])
 dnl Checks for compiler characteristics.
 dnl AC_ISC_POSIX
 AC_C_INLINE
@@ -84,4 +82,4 @@ Makefile
 pkgIndex.tcl
 ])
 
-AC_OUTPUT([])
+AC_OUTPUT
